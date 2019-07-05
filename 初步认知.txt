@@ -1,0 +1,32 @@
+BLAST+包提供了三类应用程序:1.)搜索工具，2.)BLAST数据库工具，3)序列过滤工具。
+
+          blastn、blastp、blastx、tblastx、tblastn、psiblast、rpsblast和rpstblastn被认为是搜索应用程序，因为它们执行BLAST搜索;
+          
+          makeblastdb、blastdb_aliastool、makeprofiledb和blastdbcmd则被认为是BLAST数据库应用程序，因为它们创建或检查BLAST数据库。
+
+最简单的使用方式：
+                      blastn –db nt –query nt.fsa –out results.out 
+-db: 你所建的数据库   -query 你所要查询的序列    -out 输出结果的文件名
+
+1. 若未安装ncbi中的参考库，但想使用，便可以添加 -remote 远程调用ncbi上的数据库
+      如 调用nr数据库等等
+                      blastn –db nr –query nt.fsa –out results.out -remote
+                      grep RID test.out
+                      blast_formatter –rid RID –out test.tab –outfmt 7 
+      -outfmt 输出文件格式，下文有介绍。
+   但是不能使用多线程(-num_threads)(若能，会导致ncbi网页崩溃)，而且运行速度十分慢。
+   
+2. 若想安装ncbi内的数据库， 可以使用update_blastdb.pl，而且还可以更新已安装了的ncbi库
+            如
+                      ./update_blastdb.pl --decompress swissprot
+            将下载swissport数据库中所有tar文件
+            
+3. 建自己数据所构成的数据库：
+           如
+           makeblastdb -in test.fsa -parse_seqids -blastdb_version 5 -taxid_map test_map.txt -title "Cookbook demo" -dbtype prot
+    makeblaastdb: 建库指令      in： 输入文件      -parse——seqids 片块化，便用运行  -blastdb_version 所建数据库的版本
+    -taxid_map ： 序列名与taxid的映射文件       -title 数据库名  -dtype 数据库的数据类型
+  对于BLAST+ 2.9.0之前的版本(计划在2019年3月发布)，taxid映射文件的临时标识符(如上面的示例所示)应该以lcl|(例如，lcl|seq1代替seq1)作为前缀
+  
+4. 查看输出文件类型、blast+应用程序的指令意义    
+          在 https://www.ncbi.nlm.nih.gov/books/NBK279684/ 就可以查看
